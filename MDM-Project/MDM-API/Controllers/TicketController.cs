@@ -41,13 +41,15 @@ namespace MDM_API.Controllers
             #endregion
 
             #region Ticket Queries
-            var createTicketParams = new { maDatVe = ticketId, date = DateTime.Now, soGhe = seatNumber };
-            var ticketTripRelationshipParams = new { maChuyen = tripId, maDatVe = ticketId };
-            var userTicketRelationshipParams = new { maTaiKhoan = userId, maDatVe = ticketId };
+            var createTicketParams = new { 
+                maChuyen = tripId, 
+                maTaiKhoan = userId, 
+                maDatVe = ticketId, 
+                date = DateTime.Now, 
+                soGhe = seatNumber 
+            };
 
             await _session.RunAsync(TicketQueries.CREATE_TICKET, createTicketParams);
-            await _session.RunAsync(TicketQueries.CREATE_TICKET_TRIP_RELATIONSHIP, ticketTripRelationshipParams);
-            await _session.RunAsync(TicketQueries.CREATE_USER_TICKET_RELATIONSHIP, userTicketRelationshipParams);
             #endregion
 
             #region Trip Queries

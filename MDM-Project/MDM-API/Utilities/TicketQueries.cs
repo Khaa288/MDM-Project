@@ -5,8 +5,9 @@
         public const string GET_ALL_TICKETS = "MATCH(vx:VeXe) return vx";
 
         public const string CREATE_TICKET = 
-            "CREATE (vx1:VeXe " +
-            "{" +
+            "MATCH (tk: TaiKhoan {MaTaiKhoan: $maTaiKhoan}), (cx:ChuyenXe {MaChuyen: $maChuyen}) " +
+            "CREATE (tk)" +
+            "-[:Dat {" +
                 "MaDatVe: $maDatVe, " +
                 "ThoiGian: $date, " +
                 "SoGhe: $soGhe, " +
@@ -14,16 +15,7 @@
                 "MaHoaDon: 1, " +
                 "TrangThai: 'Đã thanh toán', " +
                 "TongTien: 500000" +
-            "})";
-
-        public const string CREATE_TICKET_TRIP_RELATIONSHIP =
-            "MATCH(cx:ChuyenXe {MaChuyen: $maChuyen}), (vx:VeXe {MaDatVe: $maDatVe}) " +
-            "WITH cx, vx " +
-            "CREATE (vx)-[:BaoGom]->(cx);";
-
-        public const string CREATE_USER_TICKET_RELATIONSHIP =
-            "MATCH(tk:TaiKhoan {MaTaiKhoan: $maTaiKhoan}), (vx: VeXe {MaDatVe: $maDatVe})" +
-            "WITH tk, vx " +
-            "CREATE (tk)-[:Dat]->(vx)";
+            "}]" +
+            "->(cx)";
     }
 }
