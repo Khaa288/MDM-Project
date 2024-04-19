@@ -1,6 +1,7 @@
 ﻿using MDM_API.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Neo4j.Driver;
+using Neo4j.Driver.Preview.Mapping;
 
 namespace MDM_API.Controllers
 {
@@ -18,13 +19,28 @@ namespace MDM_API.Controllers
         [HttpGet]
         public async Task<ActionResult> RecommendTrip (string userId)
         {
-            var recommendTrips = new List<IRecord>();
+            var neo4j_RECOMMENDATION1 = await _session.RunAsync(RecommendationQueries.RECOMMENDATION1, new { maTaiKhoan = userId }).Result.ToListAsync();
+            var neo4j_RECOMMENDATION2 = await _session.RunAsync(RecommendationQueries.RECOMMENDATION2, new { maTaiKhoan = userId }).Result.ToListAsync();
 
-            var neo4j_RECOMMENDATION1 = await _session.RunAsync(RecommendationQueries.RECOMMENDATION1, new { maTaiKhoan = userId });
-            var neo4j_RECOMMENDATION2 = await _session.RunAsync(RecommendationQueries.RECOMMENDATION2, new { maTaiKhoan = userId });
-            var neo4j_RECOMMENDATION3 = await _session.RunAsync(RecommendationQueries.RECOMMENDATION3);
+            var neo4j_getMostFrequentOrderAlongLocations = await _session.RunAsync(RecommendationQueries.GET_MOST_FREQUENT_ORDER_ALONG_LOCATIONS);
+            var locations = neo4j_getMostFrequentOrderAlongLocations.ToListAsync()
+                                                .Result
+                                                .Select(value =>
+                                                {
+                                                    return new
+                                                    {
+                                                        maDiaDiem1 = value["dd1"].As<INode>().Properties["MaDiaDiem"].As<string>(),
+                                                        maDiaDiem2 = value["dd2"].As<INode>().Properties["MaDiaDiem"].As<string>()
+                                                    };
+                                                })
+                                                .Single();
+            var neo4j_RECOMMENDATION3 = await _session.RunAsync(RecommendationQueries.RECOMMENDATION3, locations).Result.ToListAsync();
 
-            return Ok(neo4j_RECOMMENDATION2);
+            var recommendedTrips = neo4j_RECOMMENDATION1
+                                        .Concat(neo4j_RECOMMENDATION2)
+                                        .Concat(neo4j_RECOMMENDATION3);
+
+            return Ok(recommendedTrips);
         }
     }
 }
