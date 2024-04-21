@@ -5,7 +5,7 @@
         // Recommend top 3 trip based on the most frequently booking tickets
         public const string RECOMMENDATION1 =
             "MATCH (tk: TaiKhoan {MaTaiKhoan: $maTaiKhoan})-[r:DaDat]->(cx:ChuyenXe) " +
-            "RETURN cx " +
+            "RETURN cx.MaChuyen as cx " +
             "ORDER BY r.SoLan DESC " +
             "LIMIT 3 ";
 
@@ -13,7 +13,7 @@
         public const string RECOMMENDATION2 =
             "MATCH p = (tk:TaiKhoan {MaTaiKhoan: $maTaiKhoan})-[r:Dat]->(cx:ChuyenXe)-[]->(dd:DiaDiem)<-[]-(gy:ChuyenXe) " +
             "WHERE cx.MaChuyen <> gy.MaChuyen " +
-            "RETURN collect(gy)[0..2] as cx";
+            "RETURN dd.TenDiaDiem, collect(gy.MaChuyen)[0..2] as cx ";
 
         // Recommend top 3 trips based on top 1 locations pairs with highest "CungDat" relationship number 
         public const string GET_MOST_FREQUENT_ORDER_ALONG_LOCATIONS =
@@ -27,7 +27,7 @@
             "WHERE " +
                 "(origin.MaDiaDiem = $maDiaDiem1 and des.MaDiaDiem = $maDiaDiem2) or " +
                 "(origin.MaDiaDiem = $maDiaDiem2 and des.MaDiaDiem = $maDiaDiem1) " +
-            "RETURN cx " +
+            "RETURN cx.MaChuyen as cx " +
             "LIMIT 3 ";
     }
 }

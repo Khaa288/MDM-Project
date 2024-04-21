@@ -10,6 +10,11 @@
             "MATCH(cx:ChuyenXe {MaChuyen: $maChuyen})-[]->(dd:DiaDiem)" +
             "RETURN dd";
 
+        public const string GET_TRIP_WITH_LOCATIONS = 
+            "MATCH (origin:DiaDiem)<-[]-(cx:ChuyenXe)-[:CoDiemDen]->(des:DiaDiem) " + 
+            "WHERE cx.MaChuyen IN $chuyenXes " + 
+            "RETURN cx, origin, des ";
+
         public const string UPDATE_TRIP_SEAT_QUANTITY = 
             "MATCH(cx:ChuyenXe {MaChuyen: $maChuyen}) " +
             "SET cx.SoGheTrong = $soGheConLai RETURN cx";
