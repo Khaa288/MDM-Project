@@ -3,7 +3,6 @@ using Neo4j.Driver;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -14,6 +13,7 @@ builder.Services.AddSingleton(GraphDatabase.Driver(
         builder.Configuration["Neo4j:Password"]))
     .AsyncSession(o => o.WithDatabase(builder.Configuration["Neo4j:Database"]))
 );
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -25,6 +25,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.UseAuthorization();
 
