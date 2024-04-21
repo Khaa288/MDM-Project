@@ -1,13 +1,15 @@
 import TripCard from './TripCard'
 
-function TripBox() {
+interface TripBoxProps {
+  tripData: TripResponse[];
+}
+
+function TripBox(props: TripBoxProps) {
   return (
     <div className="container bg-light border border-warning rounded mt-5 p-3">
-        <TripCard/>
-        <TripCard/>
-        <TripCard/>
-        <TripCard/>
-        <TripCard/>
+       {
+        props.tripData.length > 0 && props.tripData.map((value) => (<TripCard trip={value}/>))
+       }
     </div>
   )
 }

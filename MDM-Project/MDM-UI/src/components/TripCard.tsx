@@ -1,22 +1,27 @@
-function TripCard() {
+interface TripCardProps {
+  trip: TripResponse
+}
+
+function TripCard(props: TripCardProps) {
+  console.log(props.trip.destinationName);
   return (
     <div className="my-2 border border-3 rounded bg-white pt-3">
         <div className="row px-5">
           <div className="col-6 pb-3">
             <div className="row col col-12">
-              <div className="col-4 text-start"><h2>6:00</h2></div>
+              <div className="col-4 text-start"><h2>{props.trip.startTime}:00</h2></div>
 
               <div className="col-4 text-secondary text-center">
-              <div className="col-12">12 giờ</div>
-                <div className="col-12">(Asian/HCM)</div>
+              <div className="col-12">{parseInt(props.trip.arrivedTime!) - parseInt(props.trip.startTime!)} giờ</div>
+                <div className="col-12">Chuyến {props.trip.tripId}</div>
               </div>
               
-              <div className="col-4 text-end"><h2>23:00</h2></div>
+              <div className="col-4 text-end"><h2>{props.trip.arrivedTime}:00</h2></div>
             </div>
 
             <div className="row col col-12">
-              <div className="col-6 text-start">Điểm đi</div>
-              <div className="col-6 text-end">Điểm đến</div>
+              <div className="col-6 text-start">{props.trip.originName}</div>
+              <div className="col-6 text-end">{props.trip.destinationName}</div>
             </div>
           </div>
 
@@ -26,8 +31,8 @@ function TripCard() {
 
           <div className="col-4">
             <div className="row col col-12 text-center">
-              <div className="col col-6">Loại xe</div>
-              <div className="col col-6 text-success">Số chỗ trống : 8</div>
+              <div className="col col-6">{props.trip.vehicleType}</div>
+              <div className="col col-6 text-success">Số chỗ trống : {props.trip.emptySeats}</div>
             </div>
             <div className="col col-12 text-end px-5">200.000đ</div>
           </div>
