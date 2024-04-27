@@ -5,6 +5,7 @@
         // Recommend top 3 trip based on the most frequently booking tickets
         public const string RECOMMENDATION1 =
             "MATCH (tk: TaiKhoan {MaTaiKhoan: $maTaiKhoan})-[r:DaDat]->(cx:ChuyenXe) " +
+            "WHERE cx.SoGheTrong <> '0' " + 
             "RETURN cx.MaChuyen as cx " +
             "ORDER BY r.SoLan DESC " +
             "LIMIT 3 ";
@@ -12,7 +13,7 @@
         // Recommend top 5 trips based on top 3 latest tickets -> get locations -> Top [2 -> 10] new trip based on the locations
         public const string RECOMMENDATION2 =
             "MATCH p = (tk:TaiKhoan {MaTaiKhoan: $maTaiKhoan})-[r:Dat]->(cx:ChuyenXe)-[]->(dd:DiaDiem)<-[]-(gy:ChuyenXe) " +
-            "WHERE cx.MaChuyen <> gy.MaChuyen " +
+            "WHERE cx.MaChuyen <> gy.MaChuyen and gy.SoGheTrong <> '0' " +
             "RETURN dd.TenDiaDiem, collect(gy.MaChuyen)[0..2] as cx ";
 
         // Recommend top 3 trips based on top 1 locations pairs with highest "CungDat" relationship number 
@@ -26,7 +27,8 @@
             "MATCH (origin:DiaDiem)<-[:CoDiemDi]-(cx:ChuyenXe)-[:CoDiemDen]->(des:DiaDiem) " +
             "WHERE " +
                 "(origin.MaDiaDiem = $maDiaDiem1 and des.MaDiaDiem = $maDiaDiem2) or " +
-                "(origin.MaDiaDiem = $maDiaDiem2 and des.MaDiaDiem = $maDiaDiem1) " +
+                "(origin.MaDiaDiem = $maDiaDiem2 and des.MaDiaDiem = $maDiaDiem1) and " +
+                "cx.SoGheTrong <> '0' " + 
             "RETURN cx.MaChuyen as cx " +
             "LIMIT 3 ";
     }

@@ -1,3 +1,4 @@
+using MDM_API.Services;
 using Neo4j.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,13 +7,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Neo4j services
 builder.Services.AddSingleton(GraphDatabase.Driver(
-    builder.Configuration["Neo4j:Remote"], 
+    builder.Configuration["Neo4j:Local"], 
     AuthTokens.Basic(
         builder.Configuration["Neo4j:Username"], 
         builder.Configuration["Neo4j:Password"]))
     .AsyncSession(o => o.WithDatabase(builder.Configuration["Neo4j:Database"]))
 );
+
+// MongoDb services
+builder.Services.Configure<MongoDbSettings>(
+    builder.Configuration.GetSection("MongoDb")
+);
+builder.Services.AddSingleton<MongoDbServices>();
+
 builder.Services.AddCors();
 
 var app = builder.Build();
